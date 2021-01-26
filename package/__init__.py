@@ -1,6 +1,7 @@
 import os
 
 import speech_recognition as sr
+from past.builtins import raw_input
 from pydub import AudioSegment
 from pydub.silence import split_on_silence
 
@@ -8,7 +9,14 @@ import glob
 import os.path
 
 
-def get_large_audio_transcription(path_to_file):
+def get_folder_from_user():
+    user_input = raw_input("Enter the path of your file: ")
+
+    assert os.path.exists(user_input), "I did not find the file at, " + str(user_input)
+    return user_input
+
+
+def get_audio_files(path_to_file):
     """
     Splitting the audio file into portions
     and apply speech recognition on each of those
@@ -50,8 +58,10 @@ def get_large_audio_transcription(path_to_file):
     return whole_text
 
 
+chosen_location = get_folder_from_user()
+
 directory = '.'
-files = glob.glob(os.path.join("C:\\Users\\Costel\\Desktop\\testing", '*.mp4'))
+files = glob.glob(os.path.join(chosen_location, '*.mp4'))
 files.sort(key=os.path.getctime, reverse=True)
 
 text_file = open("Output.txt", "w")
@@ -67,7 +77,7 @@ for file in files:
     r = sr.Recognizer()
 
     text_file = open("Output.txt", "a")
-    text_file.write(get_large_audio_transcription(path + ".wav"))
+    text_file.write(get_audio_files(path + ".wav"))
 
 text_file.close()
 
